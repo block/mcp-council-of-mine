@@ -1,0 +1,21 @@
+[project]
+name = "mcp-council-of-mine"
+version = "0.1.2"
+description = "MCP server with 9 council members voting system"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.13.0.2",
+]
+
+[project.scripts]
+mcp_council_of_mine = "mcp_council_of_mine.server:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = { find = { where = ["src"] } }
+
+[tool.setuptools.package-dir]
+"" = "src"

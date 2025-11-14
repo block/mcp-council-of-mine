@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+# Council of Mine MCP Server Launcher
+# This script ensures the server runs with the correct environment
+
+set -e
+
+SERVER_DIR="/Users/ssickle/Development/vibe-code-stuff/mcp-council-of-mine"
+
+cd "$SERVER_DIR"
+export PYTHONPATH="$SERVER_DIR"
+
+/Users/ssickle/.local/bin/uv run --directory "$SERVER_DIR" fastmcp run "$SERVER_DIR/src/main.py"

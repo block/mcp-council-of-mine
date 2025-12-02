@@ -1,10 +1,10 @@
 import re
 import logging
 from fastmcp import Context
-from src import mcp
-from src.council.members import get_all_members
-from src.council.state import get_state_manager
-from src.security import validate_prompt, sanitize_text, safe_extract_text
+from mcp_council_of_mine.server import mcp
+from mcp_council_of_mine.council.members import get_all_members
+from mcp_council_of_mine.council.state import get_state_manager
+from mcp_council_of_mine.security import validate_prompt, sanitize_text, safe_extract_text
 
 
 def extract_text_from_response(response) -> str:

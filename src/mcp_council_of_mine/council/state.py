@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from typing import TypedDict
-from src.security import (
+from mcp_council_of_mine.security import (
     validate_debate_id,
     sanitize_text,
 )

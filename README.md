@@ -37,7 +37,7 @@ uvx --from git+https://github.com/block/mcp-council-of-mine mcp_council_of_mine
 
 ```bash
 # Clone the repository
-git clone https://github.com/block/council-of-mine.git
+git clone https://github.com/block/mcp-council-of-mine.git
 cd council-of-mine
 
 # Install dependencies

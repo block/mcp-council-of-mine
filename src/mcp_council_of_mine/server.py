@@ -83,6 +83,10 @@ To reference past debates:
 
 mcp = FastMCP(name="council-of-mine", instructions=INSTRUCTIONS)
 
+from mcp_council_of_mine import tools  # noqa: F401, E402
+from mcp_council_of_mine import prompts  # noqa: F401, E402
+
+
 def main():
     mcp.run()
 

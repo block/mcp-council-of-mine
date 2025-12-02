@@ -1,4 +1,4 @@
-from src import mcp
+from mcp_council_of_mine.server import mcp
 
 @mcp.prompt()
 def council_debate(topic: str) -> str:

@@ -38,13 +38,13 @@ uvx --from git+https://github.com/block/mcp-council-of-mine mcp_council_of_mine
 ```bash
 # Clone the repository
 git clone https://github.com/block/mcp-council-of-mine.git
-cd council-of-mine
+cd mcp-council-of-mine
 
 # Install dependencies
 uv sync
 
 # Run the server
-PYTHONPATH=. uv run fastmcp dev src/main.py
+uv run mcp_council_of_mine
 ```
 
 ## Adding to AI Agents
@@ -57,14 +57,12 @@ Add to your Goose configuration (`~/.config/goose/config.yaml`):
 ```yaml
 extensions:
   council-of-mine:
-    name: Council of Mine
+    name: CouncilOfMine
     cmd: uvx
     args:
       - --from
-      - git+https://github.com/YOUR_USERNAME/council-of-mine
-      - fastmcp
-      - run
-      - src/main.py
+      - git+https://github.com/block/mcp-council-of-mine
+      - mcp_council_of_mine
     enabled: true
     type: stdio
     timeout: 300
@@ -74,15 +72,13 @@ extensions:
 ```yaml
 extensions:
   council-of-mine:
-    name: Council of Mine
+    name: CouncilOfMine
     cmd: uvx --from /path/to/mcp-council-of-mine mcp_council_of_mine
     args: []
     enabled: true
     type: stdio
     timeout: 300
 ```
-
-**Note:** Goose intercepts Python/uvx commands and can break the working directory. The wrapper script in `scripts/council-mcp` handles this, or use the direct GitHub method.
 
 ### Other MCP Clients
 
@@ -92,152 +88,11 @@ For any MCP-compatible client, it must support stdio servers *and* sampling.
 
 ### Running the Server (Development)
 
+You can use the MCP inspector tool to debug this server. For example, to inspect the current dev version from Github you can run the following command (requires NodeJS)
+
 ```bash
 # With inspector (for debugging)
-PYTHONPATH=. uv run fastmcp dev src/main.py
-
-# Or directly from GitHub
-uvx --from git+https://github.com/YOUR_USERNAME/council-of-mine fastmcp dev src/main.py
-```
-
-## Available Tools
-
-### 1. `start_council_debate(prompt)`
-
-Initiate a new council debate where all 9 members generate opinions on your prompt.
-
-**Args:**
-- `prompt` (str): The topic or question to debate
-
-**Returns:**
-- Formatted text displaying ALL 9 individual council member opinions
-- Each member's unique perspective shown separately with their name and icon
-- Preserves the full diversity of viewpoints
-
-**Example:**
-```
-Use the start_council_debate tool with:
-prompt: "Should we prioritize speed or quality in software development?"
-
-Response will show all 9 members' opinions, like:
-🔧 THE PRAGMATIST
-[Their opinion...]
-
-🌟 THE VISIONARY
-[Their opinion...]
-... (all 9 members)
-```
-
-### 2. `conduct_voting()`
-
-Automatically conduct voting where each member evaluates all opinions (except their own) and votes for the one that best aligns with their perspective.
-
-**Returns:**
-- Dictionary with complete voting transparency:
-  - `status`: voting completion status
-  - `total_votes`: number of votes cast
-  - `individual_votes`: detailed list showing who voted for whom and why
-  - Each vote includes voter name, their choice, and reasoning
-
-**Example:**
-```
-After starting a debate, call conduct_voting to have members vote.
-The response will show all individual voting decisions with reasoning.
-```
-
-### 3. `get_results()`
-
-Generate comprehensive results including all opinions, winner(s), vote reasoning, and AI-generated synthesis.
-
-**Returns:**
-- Formatted text with complete debate results:
-  - **ALL 9 individual opinions** from each council member with their vote counts
-  - Winning opinion(s) highlighted
-  - **ALL individual votes**: see exactly who voted for whom
-  - Detailed reasoning from each member explaining their vote
-  - AI-synthesized summary of the debate
-  - Debate is automatically saved to history
-
-**Example:**
-```
-After voting completes, call get_results to see all opinions,
-winning opinion, all individual votes with reasoning, and synthesis
-```
-
-### 4. `list_past_debates()`
-
-List all previously saved debates.
-
-**Returns:**
-- Dictionary with list of debates (ID, prompt, timestamp)
-
-### 5. `view_debate(debate_id)`
-
-View complete details of a past debate.
-
-**Args:**
-- `debate_id` (str): Debate ID in format YYYYMMDD_HHMMSS
-
-**Returns:**
-- Complete debate data including:
-  - All member opinions
-  - Full vote breakdown (who voted for whom)
-  - Vote reasoning from each member
-  - Results and synthesis
-
-### 6. `get_current_debate_status()`
-
-Check the status of any currently active debate.
-
-**Returns:**
-- Current debate information or "no active debate" message
-
-## Typical Workflow
-
-1. **Start Debate**: Call `start_council_debate` with your topic
-   - 9 members generate opinions via LLM sampling
-   - Interactive UI displays all opinions
-
-2. **Conduct Voting**: Call `conduct_voting`
-   - Each member votes for the opinion that resonates with them
-   - Members provide reasoning for their votes
-   - Returns detailed breakdown of all individual votes
-
-3. **View Results**: Call `get_results`
-   - **See ALL 9 individual opinions** with vote counts for each
-   - Winning opinion(s) highlighted
-   - **View ALL individual votes**: exactly who voted for whom
-   - Read detailed vote reasoning from each member
-   - Get AI-generated synthesis of all perspectives
-   - Debate is saved to file
-
-4. **Review History**: Use `list_past_debates` and `view_debate` to revisit past discussions
-
-## Example Session
-
-```
-1. start_council_debate("Should we use TypeScript or JavaScript for our new project?")
-   → 9 members share their opinions
-   → Interactive UI shows all perspectives
-
-2. conduct_voting()
-   → Members vote on opinions
-   → Reasoning collected for each vote
-   → Individual votes displayed (who voted for whom)
-
-3. get_results()
-   → ALL 9 individual opinions displayed with vote counts
-   → Winner announced
-   → ALL individual votes shown with reasoning
-   → Vote distribution displayed
-   → Synthesis generated
-   → Debate saved as debates/20250105_143022.json
-
-4. list_past_debates()
-   → View all historical debates
-
-5. view_debate("20250105_143022")
-   → Revisit the full debate
+npx @modelcontextprotocol/inspector uvx --from git+https://github.com/block/mcp-council-of-mine mcp_council_of_mine
 ```
 
 ## Architecture
@@ -289,40 +144,6 @@ See `docs/SECURITY_REVIEW.md` and `docs/SECURITY_FIXES.md` for details.
 
 ## Development
 
-### Project Structure
-
-```
-council-of-mine/
-├── docs/                 # Documentation
-│   ├── CLAUDE.md
-│   ├── COUNCIL_MEMBERS.md
-│   ├── SECURITY_REVIEW.md
-│   └── SECURITY_FIXES.md
-├── tests/                # Test suite
-│   ├── unit/
-│   │   └── test_security.py
-│   └── integration/
-├── scripts/              # Utility scripts
-│   ├── council-mcp       # Goose-compatible launcher
-│   └── run-server.sh
-├── debates/              # Saved debate JSON files
-├── src/                  # Source code
-│   ├── server.py         # FastMCP instance
-│   ├── main.py           # Entry point
-│   ├── security.py       # Security validation
-│   ├── prompts.py        # Trigger prompts
-│   ├── council/
-│   │   ├── members.py    # 9 member definitions
-│   │   └── state.py      # State management
-│   └── tools/
-│       ├── debate.py     # Debate initiation
-│       ├── voting.py     # Voting system
-│       ├── results.py    # Results generation
-│       └── history.py    # History tools
-├── pyproject.toml        # Project config
-└── uv.lock               # Lockfile
-```
-
 ### Running Tests
 
 ```bash
@@ -339,31 +160,18 @@ PYTHONPATH=. python tests/unit/test_security.py
 PYTHONPATH=. pytest tests/ --cov=src
 ```
 
-### Code Style
-
-This project follows the user's coding preferences:
-- English only for all code, comments, and docs
-- Self-documenting code over comments
-- Using `rg` over `grep`, `fd` over `find`
-
 ## Requirements
 
 ### For Direct GitHub Usage (uvx)
 - UV package manager installed
 - Internet connection (first run only - cached after)
 
-### For Local Development
-- Python >=3.10
-- UV package manager
-- Dependencies: `fastmcp>=2.13.0.2`
-
 ## Contributing
 
 Contributions welcome! Please ensure:
-- All code is in English
+- Follows Block's code of conduct
 - Tests pass
 - Code is self-documenting
-- UI gracefully degrades for non-UI clients
 
 ## Troubleshooting
 
@@ -384,5 +192,4 @@ uvx --force --from git+https://github.com/block/mcp-council-of-mine mcp_council_
 
 Built with:
 - [FastMCP](https://gofastmcp.com) - Python MCP server framework
-- [MCP-UI](https://mcpui.dev) - Interactive UI for MCP
 - [UV](https://docs.astral.sh/uv/) - Fast Python package manager

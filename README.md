@@ -179,6 +179,20 @@ Contributions welcome! Please ensure:
 
 Ensure your MCP client supports sampling. Some clients may not have full sampling support yet. The server will report errors if sampling fails.
 
+**Empty opinions / `SamplingResult(text='', ...)` dumps:** FastMCP 3.x returns a
+`SamplingResult` dataclass (`.text` / `.result` / `.history`) from `ctx.sample()`.
+Older extractors only read `response.content[0].text` and fell back to
+`str(response)`, storing the object dump as each member's "opinion". This server
+extracts `.text` / `.result` first (see `response_text.py`).
+
+If opinions still come back as `[Error: No text in response]`, the **host** returned
+empty sample text. Common causes:
+
+- Reasoning models with high thinking effort + low `max_tokens` (thinking consumes the budget; visible text is empty). Lower thinking effort or raise sample token budgets.
+- Client sampling handler returning non-`TextContent` blocks only (e.g. thinking) — FastMCP only treats `TextContent` as `.text`.
+
+Sample budgets used by this server: opinions 1024, votes 512, synthesis 1024 tokens.
+
 ### Updates Not Reflecting
 
 `uvx` caches the package. To force a fresh install:
